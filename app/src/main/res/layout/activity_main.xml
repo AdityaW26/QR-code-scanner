@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    >
+
+    <ImageView
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:id="@+id/imageView"
+        android:layout_centerInParent="true"
+
+        />
+
+    <Button
+        android:id="@+id/generateBtn"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/imageView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="-92dp"
+        android:background="@drawable/btn_layout"
+        android:textColor="@color/black"
+        android:text="GENERATE"
+        android:textAlignment="center"
+
+        />
+
+    <Button
+        android:id="@+id/scanBtn"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/imageView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="-92dp"
+        android:background="@drawable/btn_layout"
+        android:textColor="@color/black"
+        android:text="SCAN"
+        android:textAlignment="center"
+
+        />
+
+    <EditText
+        android:id="@+id/qrinput"
+        android:layout_width="350dp"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="30dp"
+        android:hint="Enter Value"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/white"/>
+
+    <ImageButton
+        android:id="@+id/searchBtn"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/ic_baseline_keyboard_voice_24"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="10dp"/>
+
+
+</RelativeLayout>

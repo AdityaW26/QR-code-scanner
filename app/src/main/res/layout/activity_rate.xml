@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Rate">
+
+    <RatingBar
+        android:id="@+id/ratingbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:numStars="5"
+        android:rating="1"
+        android:stepSize="1"/>
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/ratingbar"
+        android:hint="Select number of Stars!"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="-50dp"
+        android:textSize="20sp"
+        android:textColor="@color/black"
+        android:textStyle="italic"/>
+    <Button
+        android:id="@+id/submitBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SUBMIT"
+        android:layout_alignBottom="@+id/ratingbar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="-60dp"
+        />
+
+</RelativeLayout>
