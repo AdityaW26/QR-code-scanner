@@ -1,18 +1,18 @@
 package com.example.qrscanner;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
 import android.Manifest;
+import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
 import com.budiyev.android.codescanner.DecodeCallback;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.zxing.Result;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
@@ -28,64 +29,72 @@ import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 
+@SuppressWarnings("deprecation")
 public class Scanner extends AppCompatActivity {
 
     CodeScanner codeScanner;
     CodeScannerView scannerView;
-    TextView resultData;
-
+    BottomSheetBehavior bottomSheetBehavior ;
+    TextView result;
+    ImageButton webSearch, copy;
+    String QRresult;
+    CoordinatorLayout coordinatorLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scanner);
-        scannerView = findViewById(R.id.scanner_view);
-        codeScanner = new CodeScanner(this,scannerView);
+        intiValues();
 
+        codeScanner.setDecodeCallback(result -> runOnUiThread(() -> {
+            QRresult = result.getText();
+            displayResult(QRresult);
+        }));
 
+        scannerView.setOnClickListener(v -> codeScanner.startPreview());
 
-        codeScanner.setDecodeCallback(new DecodeCallback() {
-            @Override
-            public void onDecoded(@NonNull Result result) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        String QRresult = result.getText();
-                        displayResult(QRresult);
-                    }
-                });
+        webSearch.setOnClickListener(v -> {
+            if (QRresult!=null && !TextUtils.isEmpty(QRresult)) {
+                Intent webIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(QRresult));
+                startActivity(webIntent);
             }
         });
 
-
-        scannerView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                codeScanner.startPreview();
-
-            }
+        copy.setOnClickListener(v -> {
+            ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newPlainText(null, QRresult);
+            clipboard.setPrimaryClip(clip);
+            Toast.makeText(Scanner.this, "Copied to clipboard", Toast.LENGTH_SHORT).show();
         });
 
     }
 
+    private void intiValues() {
+        scannerView = findViewById(R.id.scanner_view);
+        codeScanner = new CodeScanner(this,scannerView);
+
+        View bottomSheet = findViewById(R.id.bottomSheet);
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+        result = findViewById(R.id.result);
+        webSearch = findViewById(R.id.webSearch);
+        copy = findViewById(R.id.copy);
+        coordinatorLayout = findViewById(R.id.coordinatorLayout);
+
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        coordinatorLayout.setVisibility(View.GONE);
+    }
+
     private void displayResult(String qRresult) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(qRresult).setCancelable(true).setPositiveButton("Search on Web", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Intent webIntent = new Intent(Intent.ACTION_VIEW,Uri.parse("https://"+qRresult));
-                startActivity(webIntent);
 
-            }
-        }).setNegativeButton("Exit", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                finish();
-            }
-        });
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        coordinatorLayout.setVisibility(View.VISIBLE);
+        result.setText(qRresult);
 
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
+        if (qRresult.contains("https")){
+            webSearch.setVisibility(View.VISIBLE);
+        }else {
+            webSearch.setVisibility(View.GONE);
+        }
 
     }
 

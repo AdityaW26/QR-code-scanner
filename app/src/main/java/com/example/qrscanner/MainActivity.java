@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.zxing.WriterException;
@@ -32,7 +33,7 @@ import androidmads.library.qrgenearator.QRGEncoder;
 public class MainActivity extends AppCompatActivity {
 
     EditText qrvalue;
-    Button genbtn, scanbtn;
+    TextView genbtn, noQR;
     ImageView qrImage;
     ImageButton voiceBtn;
     private static final int RECOGNIZER_RESULT = 1;
@@ -43,10 +44,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         qrImage = findViewById(R.id.imageView);
-        genbtn = (Button)findViewById(R.id.generateBtn);
-        scanbtn = (Button)findViewById(R.id.scanBtn);
-        qrvalue = (EditText)findViewById(R.id.qrinput);
-        voiceBtn = (ImageButton)findViewById(R.id.searchBtn);
+        genbtn = findViewById(R.id.generateBtn);
+        qrvalue = findViewById(R.id.qrinput);
+        voiceBtn = findViewById(R.id.searchBtn);
+        noQR = findViewById(R.id.noQRCodeTV);
 
         genbtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
                     Bitmap bitmap = qrgEncoder.getBitmap();
                     // Setting Bitmap to ImageView
                     qrImage.setImageBitmap(bitmap);
+                    noQR.setVisibility(View.GONE);
                 }catch (Exception e){
                     e.printStackTrace();
                 }
@@ -77,13 +79,6 @@ public class MainActivity extends AppCompatActivity {
              startActivityForResult(voiceIntent,RECOGNIZER_RESULT);
          }
      });
-
-    scanbtn.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            startActivity(new Intent(getApplicationContext(),Scanner.class));
-        }
-    });
 
     }
 
@@ -105,12 +100,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-        if(id==R.id.info){
-            Toast.makeText(MainActivity.this,"Developed by :\n Aditya Wanjale",Toast.LENGTH_LONG).show();
-        }
-        else if (id==R.id.Rate){
-            Intent intent = new Intent(this,Rate.class);
-            startActivity(intent);
+        if (id==R.id.scan){
+            startActivity(new Intent(getApplicationContext(),Scanner.class));
         }
         return super.onOptionsItemSelected(item);
     }
